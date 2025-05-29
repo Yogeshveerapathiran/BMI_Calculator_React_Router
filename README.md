@@ -1,5 +1,5 @@
 # Ex06 BMI Calculator
-## Date: 
+## Date: 29/05/2025
 
 ## AIM
 To develop a responsive and interactive Body Mass Index (BMI) Calculator using React that allows users to input their height and weight, and calculates their BMI to categorize their health status (e.g., Underweight, Normal, Overweight, Obese).
@@ -64,10 +64,149 @@ Create routing structure with react-router-dom:
 <li>Add styling using CSS or Tailwind.</li>
 
 ## PROGRAM
+# Home.js
+```Home.js
+import React from 'react';
+import { Link } from 'react-router-dom';
 
+function Home() {
+  return (
+    <div className="container">
+      <h1>Welcome to the BMI Calculator</h1>
+      <Link to="/bmi">
+        <button>Start BMI Calculation</button>
+      </Link>
+    </div>
+  );
+}
+
+export default Home;
+```
+# Result.js
+```Result.js
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+function Result() {
+  const { state } = useLocation();
+  const navigate = useNavigate();
+
+  if (!state) {
+    return <p>No data provided</p>;
+  }
+
+  const heightInMeters = parseFloat(state.height) / 100;
+  const weight = parseFloat(state.weight);
+  const bmi = weight / (heightInMeters * heightInMeters);
+  let category = '';
+
+  if (bmi < 18.5) category = 'Underweight';
+  else if (bmi < 24.9) category = 'Normal';
+  else if (bmi < 29.9) category = 'Overweight';
+  else category = 'Obese';
+
+  return (
+    <div className="container">
+      <h2>Your BMI Result</h2>
+      <p><strong>BMI:</strong> {bmi.toFixed(2)}</p>
+      <p><strong>Category:</strong> {category}</p>
+      <button onClick={() => navigate('/bmi')}>Calculate Again</button>
+    </div>
+  );
+}
+
+export default Result;
+```
+# BMI Calculator
+```js
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+function BMICalculator() {
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!height || !weight || isNaN(height) || isNaN(weight)) {
+      setError('Please enter valid height and weight');
+      return;
+    }
+    setError('');
+    navigate('/result', { state: { height, weight } });
+  };
+
+  return (
+    <div className="container">
+      <h2>BMI Calculator</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Height in cm"
+          value={height}
+          onChange={(e) => setHeight(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Weight in kg"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+        />
+        <button type="submit">Calculate</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+      </form>
+    </div>
+  );
+}
+
+export default BMICalculator;
+```
+# Footer.js
+```js
+import React from 'react';
+
+function Footer() {
+  return (
+    <footer className="footer">
+      <p>© 2025 Yogesh - Reg No: 212222040185</p>
+    </footer>
+  );
+}
+
+export default Footer;
+```
+# App.js
+```js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './components/Home';
+import BMICalculator from './components/BMICalculator';
+import Footer from './components/Footer';
+import Result from './components/Result';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/bmi" element={<BMICalculator />} />
+        <Route path="/result" element={<Result />} />
+      </Routes>
+      <Footer/>
+    </Router>
+  );
+}
+
+export default App;
+```
 
 
 ## OUTPUT
+![image](https://github.com/user-attachments/assets/6e1dfd92-23a8-45e1-9351-66d8316c7162)
+![image](https://github.com/user-attachments/assets/2491b0fd-04a8-4512-a3c1-b80774c196af)
+![image](https://github.com/user-attachments/assets/3a180d3a-6f4f-4523-bf21-8c7843618027)
 
 
 
